@@ -3,7 +3,7 @@ image:
   tag: latest
 
 serviceAccount:
-  name: claims-worker-sa
+  name: claims-worker
   roleArn: arn:aws:iam::111111111111:role/claims-worker-prod
 
 env:

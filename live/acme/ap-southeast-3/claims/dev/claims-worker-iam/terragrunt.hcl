@@ -24,6 +24,10 @@ dependency "queue" {
   mock_outputs_allowed_terraform_commands = ["validate", "plan"]
 }
 
+dependency "documents" {
+  config_path = "../claim-documents-bucket"
+}
+
 inputs = {
   name              = "claims-worker-dev"
   oidc_provider_arn = dependency.eks.outputs.oidc_provider_arn
@@ -31,6 +35,12 @@ inputs = {
   service_account   = "claims-worker"
 
   policy_statements = [
+    {
+      sid       = "ReadClaimDocuments"
+      effect    = "Allow"
+      actions   = ["s3:GetObject"]
+      resources = ["${dependency.documents.outputs.bucket_arn}/claims/*"]
+    },
     {
       sid    = "Queue"
       effect = "Allow"
