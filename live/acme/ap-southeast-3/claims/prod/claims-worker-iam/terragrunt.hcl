@@ -19,6 +19,10 @@ dependency "queue" {
   config_path = "../claims-documents-queue"
 }
 
+dependency "documents" {
+  config_path = "../claim-documents-bucket"
+}
+
 inputs = {
   name              = "claims-worker-prod"
   oidc_provider_arn = dependency.eks.outputs.oidc_provider_arn
@@ -26,6 +30,12 @@ inputs = {
   service_account   = "claims-worker"
 
   policy_statements = [
+    {
+      sid       = "ReadClaimDocuments"
+      effect    = "Allow"
+      actions   = ["s3:GetObject"]
+      resources = ["${dependency.documents.outputs.bucket_arn}/claims/*"]
+    },
     {
       sid       = "Queue"
       effect    = "Allow"
